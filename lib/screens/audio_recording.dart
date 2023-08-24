@@ -17,21 +17,21 @@ class FileListScreen extends StatefulWidget {
 
 class _FileListScreenState extends State<FileListScreen> {
   List<String> fileNames = [];
-  late final PlayerController playerController;
   String _durationPlayed = "00.00.00";
   bool isPlaying = false;
+  int maxDuration = 0;
   late RecorderAndPlayerBloc _andPlayerBloc;
 
   @override
   void initState() {
     super.initState();
-    playerController = PlayerController();
     _loadFiles();
     _andPlayerBloc = BlocProvider.of<RecorderAndPlayerBloc>(context);
 
     RecorderController _recorderController = RecorderController();
     BlocProvider.of<RecorderAndPlayerBloc>(context).add(
-        RecoderAndPlayerInitializeEvent(playerController, _recorderController));
+        RecoderAndPlayerInitializeEvent(
+            PlayerController(), _recorderController));
     // playerController.onCurrentDurationChanged.listen((duration) {
     //   _playerListener(duration);
     // });
@@ -62,7 +62,7 @@ class _FileListScreenState extends State<FileListScreen> {
   Future<List<String>> listFilesInDirectory() async {
     try {
       Directory directory =
-          Directory("/data/user/0/com.example.audio_recorder/cache/");
+          Directory("/data/user/0/com.deepak.audio_recorder/cache/");
       List<FileSystemEntity> files = directory.listSync();
       List<String> fileNames = [];
 
@@ -91,7 +91,6 @@ class _FileListScreenState extends State<FileListScreen> {
   @override
   void dispose() {
     super.dispose();
-    playerController.dispose();
   }
 
   @override
@@ -127,6 +126,7 @@ class _FileListScreenState extends State<FileListScreen> {
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
                   onTap: () {
+                    var playerController = PlayerController();
                     _andPlayerBloc.add(PlayerInialisedEvent(
                         audioFilePath: fileNames[index],
                         playerController: playerController));
@@ -161,7 +161,7 @@ class _FileListScreenState extends State<FileListScreen> {
                     )
                         .then(
                       (value) {
-                        playerController.stopAllPlayers();
+                        playerController.dispose();
                       },
                     );
                   },
@@ -175,7 +175,7 @@ class _FileListScreenState extends State<FileListScreen> {
                         style: TextStyle(color: Colors.white),
                       ),
                       subtitle: Text(
-                        "\nDuration:- ${Duration(milliseconds: playerController.maxDuration).toHHMMSS()}",
+                        "\nDuration:- ${Duration(milliseconds: maxDuration).toHHMMSS()}",
                         style: TextStyle(color: Colors.white),
                       ),
                     ),

@@ -1,4 +1,4 @@
-package com.example.audio_recorder_privacy
+package com.deepak.audio_recorder
 
 import io.flutter.embedding.android.FlutterActivity
 
