@@ -16,7 +16,7 @@ class RecorderAndPlayerBloc
   late PlayerController playerController;
   RecorderAndPlayerBloc() : super(RecorderAndPlayerInitial()) {
     on<RecoderAndPlayerInitializeEvent>((event, emit) async {
-      showToast("Controllers initialized...");
+      //showToast("Controllers initialized...");
       recorderController = event.recorderController;
       //playerController = event.playerController;
       recorderController.onCurrentDuration.listen((event) {
@@ -26,7 +26,7 @@ class RecorderAndPlayerBloc
     });
 
     on<RecorderStartRecordingEvent>((event, emit) async {
-      showToast("Recording started...");
+      //showToast("Recording started...");
 
       emit(RecorderRecordingState(Duration.zero));
       await recorderController.record(path: event.audioFilePath);
@@ -36,7 +36,7 @@ class RecorderAndPlayerBloc
       String value = await recorderController.stop() ?? "";
       //   PlayerBlocBloc().add(PlayerInialisedEvent(audioFilePath: ));
       emit(RecorderRecordingStoppedState(value));
-      showToast("Recording Stopped...");
+      //showToast("Recording Stopped...");
     });
 
     on<RecorderRecordedAudioDurationEvent>((event, emit) {
@@ -44,7 +44,7 @@ class RecorderAndPlayerBloc
     });
 
     on<PlayerInialisedEvent>((event, emit) async {
-      showToast("Preparing player...");
+      //showToast("Preparing player...");
       playerController = event.playerController;
       await playerController.preparePlayer(
         path: event.audioFilePath,
@@ -63,12 +63,12 @@ class RecorderAndPlayerBloc
     on<PlayerPlayAndPauseEvent>((event, emit) async {
       if (playerController.playerState == PlayerState.playing) {
         await playerController.pausePlayer();
-        showToast("Audio Paused...");
+        //showToast("Audio Paused...");
         emit(PlayerPauseState());
       } else if (playerController.playerState == PlayerState.paused ||
           playerController.playerState == PlayerState.initialized) {
         await playerController.startPlayer(finishMode: FinishMode.pause);
-        showToast("Audio Played...");
+        //showToast("Audio Played...");
         emit(PlayerPlayState());
       }
     });
@@ -78,7 +78,7 @@ class RecorderAndPlayerBloc
     });
 
     on<PlayerFastForwardEvent>((event, emit) {
-      showToast("5+");
+      //showToast("5+");
       if (playerController.playerState == PlayerState.playing) {
         playerController.seekTo(durationElapsed + 5000);
       }
@@ -86,7 +86,7 @@ class RecorderAndPlayerBloc
           Duration(milliseconds: durationElapsed)));
     });
     on<PlayerFastRewindEvent>((event, emit) {
-      showToast("5-");
+      //showToast("5-");
       playerController.seekTo(durationElapsed - 5000);
       emit(PlayerAudioPlayedDurationState(
           Duration(milliseconds: durationElapsed)));
@@ -95,14 +95,14 @@ class RecorderAndPlayerBloc
       recorderController.reset();
       playerController.dispose();
 
-      showToast("Recorder and Player Stopped");
+      //showToast("Recorder and Player Stopped");
       emit(RecorderAndPlayerStopState());
     });
   }
 
   @override
   Future<void> close() {
-    showToast("Bloc closed...");
+    //showToast("Bloc closed...");
     recorderController.dispose();
     // playerController.dispose();
 
